@@ -50,13 +50,13 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">UserNAme to send</label>
-                    <input type="Text" class="username2 form-control" id="exampleInputPassword1" placeholder="Message">
+                    <input type="Text" class="receiver form-control" id="exampleInputPassword1" placeholder="Message">
                 </div>
                  <button type="submit" class="btn btn-success">Send<span class = "glyphicon glyphicon-send"></span></button>
             </form>
              <div class="form-group">
                 <label for="exampleInputEmail1">Username</label>
-                <input type="text" class="username form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="UserNAme">
+                <input type="text" class="sender form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="UserNAme">
                 <small id="emailHelp" class="form-text text-muted">Usernaem mate</small>
             </div>
          <button type="next" class="btn btn-success" onclick="register()">Register<span class = "glyphicon glyphicon-send"></span></button>
@@ -79,41 +79,44 @@
 
         var register= () =>{
             
-            var user_name = $ ('input.username').val()
-            socket.emit( 'register event', user_name )
-            console.log('sending')
+            var user_name = $ ('input.sender').val()
+            var  eventMsg = { event: 'REG_MSG' , 
+                              data:{userName: user_name}}
+            
+            sendMessage(eventMsg)
             $( 'input.message' ) .val( '' ).focus()
 
         }
 
+        var sendMessage = (eventMsg) => {
+            console.log('sending',eventMsg)
+            socket.emit( 'event msg', eventMsg )
+        }
+
         var form = $( 'form' ).on( 'submit', function ( e ){
             e.preventDefault()
-            var user_name = $ ('input.username2').val()
+            var sender_name = $ ('input.sender').val()
+            var user_name = $ ('input.receiver').val()
             var message = $ ('input.message').val()
-            socket.emit( 'private msg', { 
-                user : user_name,
-                msg : message
-            } )
+            var  eventMsg = { event: 'EVENT_PRI_MSG' , 
+                              data:{  receiver: user_name, msg : message , sender: sender_name  }}
 
-            $( 'input.message' ) .val( '' ).focus()
+            sendMessage(eventMsg)
+            $( 'input.message' ) .val( '' ).focus() 
+
         })
 
         //caprute message
-        socket.on( 'my response' , function( msg ){
-                if( typeof msg.user !== 'undefined'){
-                    $( 'h1' ).remove()
-                    $( 'div.msg-wrapper' ).append( '<div class ="msgbbl"><span class ="msguser"><b>'+ msg.user+'</b></span> : <span class="msg_msg">'+msg.msg+'</span></div>' )
+        socket.on( 'server response' , function( msg ){
+                console.log('msg received', msg)
+                if( typeof msg.data.sender !== 'undefined'){
+                    if(msg.event == "EVENT_PRI_MSG_RESPONSE"){
+                        $( 'h1' ).remove()
+                        alert(msg.data.sender+ " : "+ msg.data.msg)
+                    }
                 }
         })
 
-        socket.on( 'private room' , function( msg ){
-                alert(msg)
-                //    $( 'h1' ).remove()
-                 //   $( 'div.msg-wrapper' ).append( '<div class ="msgbbl"><span class ="msguser"><b>'+ msg.user+'</b></span> : <span class="msg_msg">'+msg.msg+'</span></div>' )
-                
-        })
-
-        
     </script>
   </body>
 </html>

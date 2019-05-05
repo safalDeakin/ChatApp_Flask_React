@@ -54,12 +54,15 @@
                 </div>
                  <button type="submit" class="btn btn-success">Send<span class = "glyphicon glyphicon-send"></span></button>
             </form>
+            <br/>
+            <button type="next" class="btn btn-success" onclick="broadcast()">BroadCast Message<span class = "glyphicon glyphicon-send"></span></button>
              <div class="form-group">
                 <label for="exampleInputEmail1">Username</label>
                 <input type="text" class="sender form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="UserNAme">
                 <small id="emailHelp" class="form-text text-muted">Usernaem mate</small>
             </div>
          <button type="next" class="btn btn-success" onclick="register()">Register<span class = "glyphicon glyphicon-send"></span></button>
+
         </div>
     </div>
     <!-- Optional JavaScript -->
@@ -80,11 +83,23 @@
         var register= () =>{
             
             var user_name = $ ('input.sender').val()
+
             var  eventMsg = { event: 'REG_MSG' , 
                               data:{userName: user_name}}
             
             sendMessage(eventMsg)
             $( 'input.message' ) .val( '' ).focus()
+
+        }
+
+        var broadcast = ()=>{
+
+            var sender_name = $ ('input.sender').val();
+            var message = $ ('input.message').val();
+            var eventMsg = { event: 'EVENT_PUB_MSG',
+                            data:{msg : message , sender: sender_name }}
+            sendMessage(eventMsg);
+            $( 'input.message' ) .val( '' ).focus() 
 
         }
 
@@ -95,9 +110,11 @@
 
         var form = $( 'form' ).on( 'submit', function ( e ){
             e.preventDefault()
+
             var sender_name = $ ('input.sender').val()
             var user_name = $ ('input.receiver').val()
             var message = $ ('input.message').val()
+
             var  eventMsg = { event: 'EVENT_PRI_MSG' , 
                               data:{  receiver: user_name, msg : message , sender: sender_name  }}
 
@@ -113,6 +130,14 @@
                     if(msg.event == "EVENT_PRI_MSG_RESPONSE"){
                         $( 'h1' ).remove()
                         alert(msg.data.sender+ " : "+ msg.data.msg)
+                    }
+                    else if (msg.event == "EVENT_PUB_MSG_RESPONSE"){
+                         $( 'h1' ).remove()
+                        alert("pub message: "+ msg.data.sender+ " : "+ msg.data.msg)
+                    }
+                    else if (msg.event == "REG_MSG_RESPONSE"){
+                        alert(msg.data.sender +" : "+ msg.data.msg)
+
                     }
                 }
         })

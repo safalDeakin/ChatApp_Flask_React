@@ -32,7 +32,9 @@ def sendPrivateMessage( jsonMessage ):
 def registerUser(data):
     print( 'received register msg :' + str(data))
     users[data['userName']]= request.sid
-    print (users)
+    session_id =  users[data['userName']]
+    msg = msgAsEvent('REG_MSG_RESPONSE',"Successfully register","Server")
+    socketio.emit( 'server response' , msg , room=session_id )
 
 def msgAsEvent(event,jsonMessage,sender):
     newMessage = {'event': event, 'data':{ 'msg': jsonMessage,'sender':sender}}
@@ -41,7 +43,8 @@ def msgAsEvent(event,jsonMessage,sender):
 
 def sendBroadCastMessage( json ):
     print( 'received something : ' + str( json ) )
-    msg =   msgAsEvent('EVENT_PUB_MSG_RESPONSE',json['msg']); 
+    #creating event message
+    msg =   msgAsEvent('EVENT_PUB_MSG_RESPONSE',json['msg'],json['sender']); 
     socketio.emit( 'server response' , msg)
 
 if __name__ == '__main__':

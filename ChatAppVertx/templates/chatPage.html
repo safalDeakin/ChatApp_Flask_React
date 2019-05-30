@@ -12,7 +12,8 @@
     div.msgbbl{
         
         padding: 5px 10 px;
-        
+
+
     }
 
     span.msguser{
@@ -72,7 +73,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script>
 
-        var socket = io.connect( 'http://localhost:5000/' )
+        var socket = io.connect( 'http://localhost:9999/' )
         //broadcasting
         socket.on( 'connect',function(){
             socket.emit( 'my event', {

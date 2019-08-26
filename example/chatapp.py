@@ -16,6 +16,5 @@ def handle_my_custom_event( json ):
     print( 'received something : ' + str( json ) )
     socketio.emit( 'my response' , json)
     
-
 if __name__ == '__main__':
     socketio.run(app,debug =True)

@@ -15,3 +15,4 @@ class UserSession :
     def getSessionId(self,id):
         return self.users[id]
 
+Session = UserSession()

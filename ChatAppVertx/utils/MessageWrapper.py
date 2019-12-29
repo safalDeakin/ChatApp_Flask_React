@@ -1,10 +1,9 @@
 
-
-class EventMessageWrapper(object):
+class MessageWrapper(object):
 
     def __new__(cls):
         if not hasattr(cls,'instance'):
-            cls.instance = super (EventMessageWrapper,cls).__new__(cls)
+            cls.instance = super (MessageWrapper,cls).__new__(cls)
         return cls.instance
 
     def wrap(self,event,jsonMessage,sender):
@@ -13,4 +12,4 @@ class EventMessageWrapper(object):
         return newMessage
 
 
-MessageWrapper = EventMessageWrapper()
+MessageWrapper = MessageWrapper()

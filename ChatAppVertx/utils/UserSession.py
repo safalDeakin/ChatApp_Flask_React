@@ -15,4 +15,7 @@ class UserSession :
     def getSessionId(self,id):
         return self.users[id]
 
+    def getUsers(self):
+        return list(Session.users.keys()) 
+
 Session = UserSession()

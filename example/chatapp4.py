@@ -1,25 +1,33 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, send
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "asduicqdqweqweqwe9209"
 
-socketio = SocketIO(app)
+socketio = SocketIO(app,logger=True,cors_allowed_origins="*")
+CORS(app)
 users={}
 
 @app.route( '/' ) 
+
 def index():
     return render_template( './ChatAppPage4.html' )
 
+
 @socketio.on( 'event msg' )
 def incomingMessage(json):
-    print json
+    print (json)
     if(json['event']=='EVENT_PRI_MSG'):
         sendPrivateMessage(json['data'])
     elif(json['event']=='EVENT_PUB_MSG'):
         sendBroadCastMessage(json['data'])
     elif(json['event']=='REG_MSG'):
+        registerUser(json['data'])
+
+@socketio.on( 'register msg' )
+def registerMessage(json):
         registerUser(json['data'])
 
 def sendPrivateMessage( jsonMessage ):

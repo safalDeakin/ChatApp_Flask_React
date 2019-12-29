@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit, send
 from utils.EventHandlers import EventHandler
-
+from flask_cors import CORS, cross_origin
 
 DEFAULT_EVENT = 'event msg' 
 DEFAULT_TEMPLATE = './chatPage.html' 
@@ -9,8 +9,9 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "asduicqdqweqweqwe9209"
 
-socketIO = SocketIO(app)
+socketIO = SocketIO(app,logger=True,cors_allowed_origins="*")
 
+CORS(app);
 @app.route( '/' ) 
 def index():
     return render_template(DEFAULT_TEMPLATE )
@@ -21,10 +22,10 @@ def emit(msg, channel, broadCast):
     else:
         socketIO.emit( 'server response' , msg, room = channel ) 
         
-@socketIO.on('event msg' )
+@socketIO.on('event msg')
 def incomingMessage(json):
-    print "incoming Message From Socket :: "
-    print json
+    print ("incoming Message From Socket :: ")
+    print (json)
     handleMessage(json)  
 
 def handleMessage(json):
@@ -32,7 +33,7 @@ def handleMessage(json):
     emit(responseMsg,channel,broadCast) 
     
 if __name__ == '__main__':
-    print "Socket is starting program"
+    print ("Socket is starting program")
     socketIO.run(app, debug = True, host = '127.0.0.1', port = 9999)
 
 
